@@ -2,6 +2,7 @@ package custom_shortcuts;
 
 import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -10,17 +11,38 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Frame extends JFrame implements FocusListener {
+	private int frameWidth = 0;
+	private int frameHeight = 0;
+	
 	// In this JTextField will be entered the key the user wants to use as a shortcut key.
 	JTextField shortcutField = new JTextField(10);
 	
 	JTextField screenWidthField = new JTextField(10);
 	JTextField screenHeightField = new JTextField(10);
+	
+	public Frame(int width, int height) throws AWTException {
+		super();
+		
+		this.frameWidth = width;
+		this.frameHeight = height;
+		
+		shortcutField.addFocusListener((FocusListener) this);
+		screenWidthField.addFocusListener((FocusListener) this);
+		screenHeightField.addFocusListener((FocusListener) this);		
+		
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(new MyDispatcher());
+
+		build(); // Initializing of the window.
+	}
 	
     private class MyDispatcher implements KeyEventDispatcher {
         @Override
@@ -40,25 +62,12 @@ public class Frame extends JFrame implements FocusListener {
             return false;
         }
     }
-    
-	public Frame() throws AWTException {
-		super();
-		
-		shortcutField.addFocusListener((FocusListener) this);
-		screenWidthField.addFocusListener((FocusListener) this);
-		screenHeightField.addFocusListener((FocusListener) this);		
-		
-        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(new MyDispatcher());
-
-		build(); // Initializing of the window.
-	}
 	
 	private void build() {
 		setTitle("Custom shortcuts");
-		setSize(320,240);
+		setSize(this.frameWidth, this.frameHeight);
 		setLocationRelativeTo(null); // Centers the frame in the middle of the screen.
-		setResizable(true);
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Allow user to close application by clicking on the cross.
 		setContentPane(buildContentPanel());
 	}
@@ -78,6 +87,8 @@ public class Frame extends JFrame implements FocusListener {
 		
 		JLabel shortcutLabel = new JLabel("Shortcut  : ");	
 		
+		JButton startButton = new JButton("Start");
+		
 		panel.add(screenWidthLabel);
 		panel.add(screenWidthField);
 		
@@ -86,6 +97,10 @@ public class Frame extends JFrame implements FocusListener {
 		
 		panel.add(shortcutLabel);
 		panel.add(shortcutField);
+		
+		panel.add(Box.createRigidArea(new Dimension(this.frameWidth, this.frameHeight / 50)));
+		panel.add(startButton);
+		
 		
 		return panel;
 	}

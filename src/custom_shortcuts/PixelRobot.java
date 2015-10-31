@@ -2,16 +2,41 @@ package custom_shortcuts;
 
 import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class PixelRobot {
-	public PixelRobot() throws AWTException {}
+	public PixelRobot() throws AWTException {
+        KeyboardFocusManager keyboardManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        keyboardManager.addKeyEventDispatcher(new MyKeyboardDispatcher());		
+	}
+	
+    private class MyKeyboardDispatcher implements KeyEventDispatcher {
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent event) {
+            if (event.getID() == KeyEvent.KEY_PRESSED) {
+            	System.out.println(event.getKeyChar());
+            }
+            
+            else if (event.getID() == KeyEvent.KEY_RELEASED) {
+            }
+            
+            else if (event.getID() == KeyEvent.KEY_TYPED) {
+            }
+            return false;
+        }
+    }	
 	
     Robot robot = new Robot();
     
+    void actionOnKeyDown() {
+    	
+    }
 	void moveMouseAndClick(int x, int y) {
         robot.mouseMove(x, y);
         robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -33,7 +58,6 @@ public class PixelRobot {
 				}
 				
 				pixelColor = new Color(screen.getRGB(x, y));
-				//System.out.println("x = " + x + " y = " + y + " " + pixelArray[0] + " " +  pixelColor);
 				
 				if (pixelColor.equals( pixelArray[0])) { // If current pixel is equal to the first pixel of the pixel sequence.
 					for (int k = 0; k < pixelArray.length; k++) {
