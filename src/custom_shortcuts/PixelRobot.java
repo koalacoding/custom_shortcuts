@@ -11,12 +11,14 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class PixelRobot {
+	char shortcutKey = '\0';
+	
 	public PixelRobot() throws AWTException {
         KeyboardFocusManager keyboardManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         keyboardManager.addKeyEventDispatcher(new MyKeyboardDispatcher());		
 	}
 	
-    private class MyKeyboardDispatcher implements KeyEventDispatcher {
+    public class MyKeyboardDispatcher implements KeyEventDispatcher {
         @Override
         public boolean dispatchKeyEvent(KeyEvent event) {
             if (event.getID() == KeyEvent.KEY_PRESSED) {
@@ -80,5 +82,18 @@ public class PixelRobot {
 		
 		int[] emptyArray = {0, 0};
 		return emptyArray;
+	}
+
+	/*-------------------------------------------------------------
+	---------------------------------------------------------------
+	--------------FIND PIXELS AND CLICK-----------
+	---------------------------------------------------------------
+	-------------------------------------------------------------*/
+	
+	public void findPixelsAndClick(int screenWidth, int screenHeight) throws AWTException {
+		Color[] pixelArray = {new Color(123, 140, 157), new Color(67, 170, 90), new Color(156, 212, 166)};
+		int[] foundCoordinates = findPixelSequence(pixelArray, screenWidth, screenHeight);
+		moveMouseAndClick(foundCoordinates[0], foundCoordinates[1]);
+		System.out.println(foundCoordinates[0] + " " + foundCoordinates[1]);	
 	}	
 }
